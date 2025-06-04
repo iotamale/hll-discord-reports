@@ -1,0 +1,44 @@
+{
+  "name": "hll-discord-reports",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node src/index.ts",
+    "nodemon": "nodemon",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "keywords": [],
+  "author": "https://github.com/iotamale",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@discordjs/collection": "^1.5.1",
+    "@discordjs/rest": "^1.7.1",
+    "axios": "^1.4.0",
+    "chalk": "^4.1.2",
+    "discord-api-types": "^0.36.3",
+    "discord.js": "^14.11.0",
+    "dotenv": "^16.0.3",
+    "fs": "^0.0.1-security",
+    "fuse.js": "^7.0.0",
+    "luxon": "^3.2.1",
+    "node-schedule": "^2.1.1",
+    "path": "^0.12.7",
+    "uuid": "^9.0.0",
+    "websocket": "^1.0.35"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iotamale/hll-discord-reports.git"
+  },
+  "homepage": "https://github.com/iotamale/hll-discord-reports#readme",
+  "bugs": {
+    "url": "https://github.com/iotamale/hll-discord-reports/issues"
+  }
+}

@@ -6,7 +6,7 @@ import { ExtendedClient } from './types/discordClientTypes';
 import { deployCommands } from './deployCommands';
 import { BotClient } from './botClient';
 // import { m_1 } from './utils/timeUtils';
-import { BaseEmbed } from './types/embedTypes';
+import { BaseEmbed } from './types/messageTypes';
 const config = require('../config.json');
 
 

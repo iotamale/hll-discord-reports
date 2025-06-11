@@ -1,7 +1,7 @@
 import TransportStream from 'winston-transport';
 import axios from 'axios';
 import { EmbedBuilder } from 'discord.js';
-import { BaseEmbed } from '../types/embedTypes';
+import { BaseEmbed } from '../types/messageTypes';
 
 interface WebhookTransportOptions {
     webhookUrl: string;

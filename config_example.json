@@ -8,16 +8,16 @@
     "servers": [
         {
             "name": "server1",
-            "displayName": "Server #1",
-            "apiBaseUrl": "https://rcon1.site.com/api/",
-            "wsUrl": "wss://rcon1.site.com/ws/logs",
+            "display_name": "Server 1",
+            "api_base_url": "https://rcon1.site.com/api/",
+            "websocket_url": "wss://rcon1.site.com/ws/logs",
             "roles": ["admin_role_to_ping"]
         },
         {
             "name": "server2",
-            "displayName": "Server #2",
-            "apiBaseUrl": "https://rcon2.site.com/api/",
-            "wsUrl": "wss://rcon2.site.com/ws/logs",
+            "display_name": "Server 2",
+            "api_base_url": "https://rcon2.site.com/api/",
+            "websocket_url": "wss://rcon2.site.com/ws/logs",
             "roles": ["admin_role_to_ping"]
         }
    ],

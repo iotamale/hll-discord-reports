@@ -1,0 +1,36 @@
+{
+    "reports_channel_id": "channel_id - server reports will be sent here",
+    "discord_app_id": "your_discord_app_id",
+    "discord_token": "your_discord_bot_token",
+    "rcon_api_key": "your_api_key",
+    "rcon_port": 443,
+    "log_channel_webhook": "your_logs_webhook_url",
+    "servers": [
+        {
+            "name": "server1",
+            "displayName": "Server #1",
+            "apiBaseUrl": "https://rcon1.site.com/api/",
+            "wsUrl": "wss://rcon1.site.com/ws/logs",
+            "roles": ["admin_role_to_ping"]
+        },
+        {
+            "name": "server2",
+            "displayName": "Server #2",
+            "apiBaseUrl": "https://rcon2.site.com/api/",
+            "wsUrl": "wss://rcon2.site.com/ws/logs",
+            "roles": ["admin_role_to_ping"]
+        }
+   ],
+    "dev_users": ["dev_iser_id"],
+    "dev_mode": true,
+    "colors": {
+        "primary": "#426fc2",
+        "error": "#f04343",
+        "warning": "#f2df33",
+        "success": "#4df055",
+        "neutral": "#286feb"
+    },
+   "images": {
+      "logo": "https://cdn.discordapp.com/attachments/919314258850885732/1329144559816671292/360.png?ex=678945d5&is=6787f455&hm=3a8fd5ac57f8854822f33eb9f52f21e7d91c27b3cfc3dbd4d6b3b586fa7132ae&"
+   }
+}

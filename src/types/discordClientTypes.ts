@@ -26,11 +26,11 @@ export class HllServerConfig {
 
 export class ExtendedClient extends Client {
     commands: Collection<string, Command>;
-    hllServers: Array<HllServerConfig>;
+    // hllServers: Array<HllServerConfig>;
 
     constructor(options: ClientOptions) {
         super(options);
-        this.hllServers = [];
+        // this.hllServers = [];
         this.commands = new Collection();
     }
 }

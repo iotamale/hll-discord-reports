@@ -9,7 +9,7 @@ export enum EmbedType {
 
 export class BaseEmbed extends EmbedBuilder {
 
-    constructor(type: 'info' | 'warning' | 'error' | 'success') {
+    constructor(type: 'info' | 'warning' | 'error' | 'success' = 'info') {
         super();
         this.setColor(0x0099FF);
         this.setTimestamp();

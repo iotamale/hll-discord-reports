@@ -50,7 +50,7 @@ class WebhookTransport extends TransportStream {
 export default WebhookTransport;
 
 function createLogEmbed(level: string, message: string, timestamp: string): Promise<BaseEmbed> {
-    const embed = new BaseEmbed('info')
+    const embed = new BaseEmbed()
         .setTitle('Log Message')
         .setColor(level === 'error' ? 0xff0000 : 0x00ff00)
         .addFields(

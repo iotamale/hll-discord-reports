@@ -1,4 +1,4 @@
-import { GatewayIntentBits, TextChannel } from 'discord.js';
+import { GatewayIntentBits, TextChannel, MessageFlags } from 'discord.js';
 import fs from 'fs';
 import logger from './logger';
 import path from 'path';
@@ -61,14 +61,14 @@ client.on('interactionCreate', async (interaction) => {
 
 		if (!command) {
 			logger.error(`No command matching ${interaction.commandName} was found.`);
-			return interaction.reply({ content: 'This command does not exist.', ephemeral: true });
+			return interaction.reply({ content: 'This command does not exist.', flags: MessageFlags.Ephemeral });
 		}
 
 		try {
 			await command.execute(interaction, botClient);
 		} catch (error) {
 			logger.error(error);
-			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+			await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
 		}
 	} else if (interaction.isButton()) {
 		const { customId } = interaction;
@@ -76,7 +76,7 @@ client.on('interactionCreate', async (interaction) => {
 
 		const button = client.buttons.get(buttonClass);
 		const clickedButtons = client.clickedButtons;
-		await interaction.deferReply({ ephemeral: true });
+		await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 		if (!button) return new Error('There is no code for this button.');
 
 		try {

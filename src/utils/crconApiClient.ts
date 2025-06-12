@@ -1,7 +1,7 @@
-import { getConfigVariable } from './utils/utils';
+import { getConfigVariable } from './utils';
 import axios, { Axios, AxiosResponse } from 'axios';
-import logger from './logger';
-import { HllServerConfig, GamePlayerInfo, PlayerStats, Watchlist } from './types/crconTypes';
+import logger from '../logger';
+import { HllServerConfig, GamePlayerInfo, PlayerStats, Watchlist } from '../types/crconTypes';
 
 export class CRCONClient {
 	public readonly hllServers: Array<HllServerConfig>;

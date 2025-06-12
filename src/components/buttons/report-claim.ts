@@ -12,4 +12,5 @@ export const data = {
 
 export async function execute(interaction: CommandInteraction, botClient: BotClient, actionId: string) {
 	console.log('Executing report-claim action, actionId:', actionId);
+	await interaction.editReply({ content: 'askjhdadsjkjhkdas' });
 }

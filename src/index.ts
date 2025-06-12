@@ -34,7 +34,7 @@ for (const file of buttonFiles) {
 	logger.info(`Loading button: ${file}`);
 	const filePath = path.join(buttonsPath, file);
 	const button = require(filePath);
-	client.commands.set(button.data.name, button);
+	client.buttons.set(button.data.name, button);
 }
 
 let botClient: BotClient;
@@ -74,25 +74,27 @@ client.on('interactionCreate', async (interaction) => {
 		const { customId } = interaction;
 		const [buttonClass, actionId] = customId.split(':');
 
-		const button = client.commands.get(buttonClass);
+		const button = client.buttons.get(buttonClass);
+		const clickedButtons = client.clickedButtons;
+		await interaction.deferReply({ ephemeral: true });
 		if (!button) return new Error('There is no code for this button.');
 
 		try {
-			// if (button?.data?.preventDoubleClick) {
-			// 	const clicked = clickedButtons.get(id);
-			// 	if (clicked) {
-			// 		await interaction.deferReply({
-			// 			ephemeral: true,
-			// 		});
-			// 		return await client.qEditReply(interaction, 'error', `Ten przycisk został już kliknięty przez innego użytkownika. Spróbuj ponownie później.`);
-			// 	}
-			// 	clickedButtons.set(id, true);
-			// 	setTimeout(() => {
-			// 		clickedButtons.delete(id);
-			// 	}, 3 * 1000);
-			// }
+			if (button?.data?.preventDoubleClick) {
+				const clicked = clickedButtons.get(actionId);
+				console.log(clickedButtons, clicked);
+				if (clicked) {
+					return await interaction.editReply({
+						content: 'This button has already been clicked by another user. Please try again later.',
+					});
+				}
+				clickedButtons.set(actionId, true);
+				setTimeout(() => {
+					clickedButtons.delete(actionId);
+				}, 3000);
+			}
 			await button.execute(interaction, client, actionId);
-			// clickedButtons.delete(id);
+			clickedButtons.delete(actionId);
 		} catch (error) {
 			console.log(error);
 		}

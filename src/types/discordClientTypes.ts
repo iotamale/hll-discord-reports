@@ -13,16 +13,15 @@ interface Button {
 		name: string;
 		preventDoubleClick?: boolean;
 	};
-	execture: Function;
+	execute: Function;
 }
 
 export class ExtendedClient extends Client {
-	commands: Collection<string, Command>;
-	buttons: Collection<string, Button>;
+	commands: Collection<string, Command> = new Collection();
+	buttons: Collection<string, Button> = new Collection();
+	clickedButtons: Collection<string, boolean> = new Collection();
 
 	constructor(options: ClientOptions) {
 		super(options);
-		this.commands = new Collection();
-		this.buttons = new Collection();
 	}
 }

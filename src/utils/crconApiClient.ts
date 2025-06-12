@@ -1,7 +1,7 @@
 import { getConfigVariable } from './utils';
 import axios, { Axios, AxiosResponse } from 'axios';
 import logger from '../logger';
-import { HllServerConfig, GamePlayerInfo, PlayerStats, Watchlist } from '../types/crconTypes';
+import { HllServerConfig, GamePlayerInfo, PlayerStats, Watchlist, PenaltyCount } from '../types/crconTypes';
 
 export class CRCONClient {
 	public readonly hllServers: Array<HllServerConfig>;
@@ -84,7 +84,12 @@ export class CRCONClient {
 				data.role,
 				watchlist,
 				playerStats,
-				data.profile.penalty_count || null
+				new PenaltyCount(
+					data?.profile?.penalty_count?.KICK,
+					data?.profile?.penalty_count?.PUNISH,
+					data?.profile?.penalty_count?.TEMPBAN,
+					data?.profile?.penalty_count?.PERMABAN
+				)
 			);
 		} catch (error) {
 			logger.error('Error fetching server info:', error);

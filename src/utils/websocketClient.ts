@@ -3,6 +3,8 @@ import { WebSocket } from 'ws';
 import type { Data } from 'ws';
 import { HllServerConfig } from '../types/crconTypes';
 import { getConfigVariable } from './utils';
+import { handleReport } from './reports';
+import { CRCONClient } from './crconApiClient';
 
 export class WebSocketClient {
 	private readonly server: HllServerConfig;
@@ -10,12 +12,14 @@ export class WebSocketClient {
 	private ws: WebSocket | null = null;
 	private isAlive: boolean = false;
 	private heartbeatInterval: NodeJS.Timeout | null = null;
+	private crconClient: CRCONClient;
 
-	constructor(server: HllServerConfig) {
+	constructor(server: HllServerConfig, crconClient: CRCONClient) {
 		this.server = server;
 		this.heartbeat = this.heartbeat.bind(this);
 		this.checkConnection = this.checkConnection.bind(this);
 		this.connect = this.connect.bind(this);
+		this.crconClient = crconClient;
 	}
 
 	private heartbeat(): void {
@@ -61,7 +65,10 @@ export class WebSocketClient {
 			logger.debug(`Message from ${this.server.name}: ${data}`);
 			const message = JSON.parse(data);
 			for (const log of message?.logs) {
-				console.log(log);
+				const playerMessage = log?.log?.sub_content;
+				if (playerMessage.toLowerCase().startsWith('!admin')) {
+					handleReport(log?.log?.player_name_1, log?.log?.player_id_1, playerMessage, this.server, this.crconClient);
+				}
 			}
 		});
 

@@ -51,6 +51,20 @@ export class PlayerStats {
 	}
 }
 
+export class PenaltyCount {
+	kick: number;
+	punish: number;
+	tempban: number;
+	permban: number;
+
+	constructor(kick: number, punish: number, tempban: number, permban: number) {
+		this.kick = kick;
+		this.punish = punish;
+		this.tempban = tempban;
+		this.permban = permban;
+	}
+}
+
 export class GamePlayerInfo {
 	playerName: string;
 	playerId: string;
@@ -64,13 +78,7 @@ export class GamePlayerInfo {
 	role: string;
 	watchlist: Watchlist | null;
 	stats: PlayerStats | null;
-	penaltyCount: Object | null;
-	/*"penalty_count": {
-        "KICK": 0,
-        "PUNISH": 56,
-        "TEMPBAN": 0,
-        "PERMABAN": 0
-    }*/
+	penaltyCount: PenaltyCount;
 
 	constructor(
 		playerName: string,
@@ -85,7 +93,7 @@ export class GamePlayerInfo {
 		role: string,
 		watchlist: Watchlist | null = null,
 		playerStats: PlayerStats | null = null,
-		penaltyCount: Object | null = null
+		penaltyCount: PenaltyCount
 	) {
 		this.playerName = playerName;
 		this.playerId = playerId;

@@ -3,7 +3,7 @@ import logger from '../../logger';
 import { BotClient } from '../../botClient';
 import { BaseEmbed } from '../../types/messageTypes';
 import { getConfigVariable } from '../../utils/utils';
-import { server } from 'typescript';
+import { quickEditReply } from '../../utils/utils';
 
 export const data = {
 	name: 'report-trash',
@@ -45,9 +45,8 @@ export async function execute(interaction: CommandInteraction, botClient: BotCli
 		components: [],
 	});
 
-	await interaction.editReply({
-		content: 'You have marked this report as unjustified.',
-	});
+	await quickEditReply('You have __claimed__ this report.', 'success', interaction);
+
 	return logger.info(
 		`Report #\`${actionId}\` marked as trash by ${interaction.user.tag} (${interaction.user.id}) in server ${interaction.guild.name} (${interaction.guild.id})`
 	);

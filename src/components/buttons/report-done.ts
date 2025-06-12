@@ -3,7 +3,7 @@ import logger from '../../logger';
 import { BotClient } from '../../botClient';
 import { BaseEmbed } from '../../types/messageTypes';
 import { getConfigVariable } from '../../utils/utils';
-import { server } from 'typescript';
+import { quickEditReply } from '../../utils/utils';
 
 export const data = {
 	name: 'report-done',
@@ -45,9 +45,7 @@ export async function execute(interaction: CommandInteraction, botClient: BotCli
 		components: [],
 	});
 
-	await interaction.editReply({
-		content: 'You have closed this report.',
-	});
+	await quickEditReply('You have __closed__ this report.', 'success', interaction);
 	return logger.info(
 		`Report #\`${actionId}\` closed by ${interaction.user.tag} (${interaction.user.id}) in server ${interaction.guild.name} (${interaction.guild.id})`
 	);

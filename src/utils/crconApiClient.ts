@@ -28,7 +28,7 @@ export class CRCONClient {
 			return response;
 		} catch (error) {
 			logger.error('Error fetching server info:', error);
-			throw new Error('Error fetching server info');
+			return Promise.reject(new Error('Error fetching server info'));
 		}
 	}
 
@@ -44,7 +44,7 @@ export class CRCONClient {
 			return res;
 		} catch (error) {
 			logger.error('Error fetching server info:', error);
-			throw new Error('Error fetching server info');
+			return Promise.reject(new Error('Error fetching server info'));
 		}
 	}
 
@@ -54,7 +54,7 @@ export class CRCONClient {
 			const response = await axios.get(`${url}/get_live_game_stats`, { headers: this.headers });
 			if (response.status !== 200) {
 				logger.error(`Failed to fetch player stats for ${playerName} from ${url}. Status code: ${response.status}`);
-				throw new Error(`Failed to fetch player stats for ${playerName}`);
+				return Promise.reject(new Error('Failed to fetch player stats'));
 			}
 			const data = response?.data?.result?.stats.filter((x: any) => x.player === playerName)[0];
 			if (!data) {
@@ -72,7 +72,7 @@ export class CRCONClient {
 			);
 		} catch (error) {
 			logger.error('Error fetching server info:', error);
-			throw new Error('Error fetching server info');
+			return Promise.reject(new Error('Error fetching server info'));
 		}
 	}
 
@@ -82,7 +82,7 @@ export class CRCONClient {
 			const response = await axios.get(`${url}/get_detailed_player_info?player_name=${playerName}`, { headers: this.headers });
 			if (response.status !== 200 || !response?.data?.result) {
 				logger.error(`Failed to fetch player info for ${playerName} from ${url}. Status code: ${response.status}`);
-				throw new Error(`Failed to fetch player info for ${playerName}`);
+				return Promise.reject(new Error(`Failed to fetch player info for ${playerName}`));
 			}
 			const data = response?.data?.result;
 			const watchData = data?.profile?.watchlist;
@@ -111,7 +111,7 @@ export class CRCONClient {
 			);
 		} catch (error) {
 			logger.error('Error fetching server info:', error);
-			throw new Error('Error fetching server info');
+			return Promise.reject(new Error('Error fetching server info'));
 		}
 	}
 }

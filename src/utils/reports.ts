@@ -6,6 +6,7 @@ import { getConfigVariable } from '../utils/utils';
 import { BaseEmbed } from '../types/messageTypes';
 import { BotClient } from '../botClient';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import logger from '../logger';
 
 const clanTags = getConfigVariable('clan_tags');
 enum Messages {
@@ -58,7 +59,10 @@ export async function handleReport(authorName: string, authorId: string, message
 	const crconClient = botClient.crconClient;
 	const colors = getConfigVariable('colors');
 	const authorData = await crconClient.getPlayerInfo(server, authorName);
-	if (!authorData) throw new Error(`Player info for ${authorName} not found.`);
+	if (!authorData) {
+		logger.error(`Player info for ${authorName} not found.`);
+		return;
+	}
 	const preparedAuthorData = new PreparedPlayerInfo(authorData);
 
 	const suspectData = await guessPlayer(messageContent, server, crconClient);
@@ -105,11 +109,13 @@ export async function handleReport(authorName: string, authorId: string, message
 	const channel = await botClient.client.channels.fetch(reportChannelId);
 
 	if (!channel || !channel.isTextBased()) {
-		throw new Error(`Report channel with ID ${reportChannelId} not found or is not a text channel.`);
+		logger.error(`Report channel with ID ${reportChannelId} not found or is not a text channel.`);
+		return;
 	}
 	const textChannel = channel.isTextBased() ? channel : null;
 	if (!textChannel) {
-		throw new Error(`Report channel with ID ${reportChannelId} is not a text-based channel.`);
+		logger.error(`Report channel with ID ${reportChannelId} is not a text-based channel.`);
+		return;
 	}
 
 	const reportMessage = await (textChannel as any).send({
@@ -123,7 +129,7 @@ export async function handleReport(authorName: string, authorId: string, message
 		new ButtonBuilder().setCustomId(`report-trash:${reportMessage.id}`).setLabel(`Unjustified report`).setStyle(ButtonStyle.Danger),
 	]);
 
-	await reportMessage.edit({
+	return await reportMessage.edit({
 		components: [row],
 	});
 }

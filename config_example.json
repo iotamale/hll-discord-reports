@@ -26,11 +26,10 @@
 	"dev_users": ["dev_iser_id"],
 	"dev_mode": true,
 	"colors": {
-		"primary": "#426fc2",
 		"error": "#f04343",
 		"warning": "#f2df33",
 		"success": "#4df055",
-		"neutral": "#286feb",
+		"info": "#0099ff",
 		"report_open": "#4682db",
 		"report_closed": "#32e82e",
 		"report_claimed": "#e07d14",

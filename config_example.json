@@ -5,7 +5,7 @@
 	"rcon_api_key": "your_api_key",
 	"rcon_port": 443,
 	"node": "dev|prod",
-	"log_channel_webhook": "your_logs_webhook_url",
+	"log_channel_webhook": "your_logs_webhook_url or null if you don't want to use it",
 	"servers": [
 		{
 			"name": "server1",
@@ -30,7 +30,11 @@
 		"error": "#f04343",
 		"warning": "#f2df33",
 		"success": "#4df055",
-		"neutral": "#286feb"
+		"neutral": "#286feb",
+		"report_open": "#4682db",
+		"report_closed": "#32e82e",
+		"report_claimed": "#e07d14",
+		"report_trash": "#c20c0c"
 	},
 	"images": {
 		"logo": "https://cdn.discordapp.com/attachments/919314258850885732/1329144559816671292/360.png?ex=678945d5&is=6787f455&hm=3a8fd5ac57f8854822f33eb9f52f21e7d91c27b3cfc3dbd4d6b3b586fa7132ae&"

@@ -9,52 +9,55 @@ import { BotClient } from './botClient';
 import { BaseEmbed } from './types/messageTypes';
 const config = require('../config.json');
 
-
-const client = new ExtendedClient({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers] });
+const client = new ExtendedClient({
+	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers],
+});
 
 const commandsPath = path.join(__dirname, 'commands');
 logger.info(`Commands path: ${commandsPath}`);
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith('.js'));
 logger.info(`Command files: ${commandFiles}`);
 
 for (const file of commandFiles) {
-    logger.info(`Loading command: ${file}`);
-    const filePath = path.join(commandsPath, file);
-    const command = require(filePath);
-    client.commands.set(command.data.name, command);
+	logger.info(`Loading command: ${file}`);
+	const filePath = path.join(commandsPath, file);
+	const command = require(filePath);
+	client.commands.set(command.data.name, command);
 }
 
 let botClient: BotClient;
 
 client.once('ready', async () => {
-    logger.info('Bot is online!');
+	logger.info('Bot is online!');
 
-    // Log the servers the bot is connected to
-    client.guilds.cache.forEach(guild => {
-        logger.info(`Connected to server: ${guild.name}, ${guild.id}`);
-    });
+	// Log the servers the bot is connected to
+	client.guilds.cache.forEach((guild) => {
+		logger.info(`Connected to server: ${guild.name}, ${guild.id}`);
+	});
 
-    client.guilds.cache.forEach(guild => {
-        deployCommands(commandFiles, commandsPath, guild.id);
-    });
+	client.guilds.cache.forEach((guild) => {
+		deployCommands(commandFiles, commandsPath, guild.id);
+	});
 
-    botClient = new BotClient(client);
+	botClient = new BotClient(client);
+
+	await botClient.connectToWebsockets();
 });
 
-client.on('interactionCreate', async interaction => {
-    if (!interaction.isCommand()) return;
+client.on('interactionCreate', async (interaction) => {
+	if (!interaction.isCommand()) return;
 
-    const command = client.commands.get(interaction.commandName);
+	const command = client.commands.get(interaction.commandName);
 
-    if (!command) return;
+	if (!command) return;
 
-    try {
-        await command.execute(interaction, botClient);
-    } catch (error) {
-        logger.error(error);
-        await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-    }
+	try {
+		await command.execute(interaction, botClient);
+	} catch (error) {
+		logger.error(error);
+		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+	}
 });
-const embed  = new BaseEmbed('info');
+const embed = new BaseEmbed('info');
 
 client.login(config.discord_token);

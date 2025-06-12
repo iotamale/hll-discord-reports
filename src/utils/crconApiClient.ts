@@ -80,7 +80,7 @@ export class CRCONClient {
 		const url = server.apiBaseUrl;
 		try {
 			const response = await axios.get(`${url}/get_detailed_player_info?player_name=${playerName}`, { headers: this.headers });
-			if (response.status !== 200) {
+			if (response.status !== 200 || !response?.data?.result) {
 				logger.error(`Failed to fetch player info for ${playerName} from ${url}. Status code: ${response.status}`);
 				throw new Error(`Failed to fetch player info for ${playerName}`);
 			}

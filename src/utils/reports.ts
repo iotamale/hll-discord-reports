@@ -112,15 +112,18 @@ export async function handleReport(authorName: string, authorId: string, message
 		throw new Error(`Report channel with ID ${reportChannelId} is not a text-based channel.`);
 	}
 
-	const row = new ActionRowBuilder().addComponents([
-		new ButtonBuilder().setCustomId(`report-claim:${123}`).setLabel(`Claim`).setStyle(ButtonStyle.Primary),
-		new ButtonBuilder().setCustomId(`report-finished:${123}`).setLabel(`Done`).setStyle(ButtonStyle.Success),
-		new ButtonBuilder().setCustomId(`report-trash:${123}`).setLabel(`Unjustified report`).setStyle(ButtonStyle.Danger),
-	]);
-
-	await (textChannel as any).send({
+	const reportMessage = await (textChannel as any).send({
 		content: adminRolesString,
 		embeds: [embed],
+	});
+
+	const row = new ActionRowBuilder().addComponents([
+		new ButtonBuilder().setCustomId(`report-claim:${reportMessage.id}`).setLabel(`Claim`).setStyle(ButtonStyle.Primary),
+		new ButtonBuilder().setCustomId(`report-done:${reportMessage.id}`).setLabel(`Done`).setStyle(ButtonStyle.Success),
+		new ButtonBuilder().setCustomId(`report-trash:${reportMessage.id}`).setLabel(`Unjustified report`).setStyle(ButtonStyle.Danger),
+	]);
+
+	await reportMessage.edit({
 		components: [row],
 	});
 }

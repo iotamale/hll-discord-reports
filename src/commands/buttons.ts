@@ -11,7 +11,7 @@ export const data = new SlashCommandBuilder().setName('buttons').setDescription(
 export async function execute(interaction: CommandInteraction, botClient: BotClient) {
 	const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
 		new ButtonBuilder().setCustomId(`report-claim:${123}`).setLabel(`Claim`).setStyle(ButtonStyle.Primary),
-		new ButtonBuilder().setCustomId(`report-finished:${123}`).setLabel(`Done`).setStyle(ButtonStyle.Success),
+		new ButtonBuilder().setCustomId(`report-done:${123}`).setLabel(`Done`).setStyle(ButtonStyle.Success),
 		new ButtonBuilder().setCustomId(`report-trash:${123}`).setLabel(`Unjustified report`).setStyle(ButtonStyle.Danger)
 	);
 

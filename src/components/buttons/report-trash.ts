@@ -6,7 +6,7 @@ import { getConfigVariable } from '../../utils/utils';
 import { server } from 'typescript';
 
 export const data = {
-	name: 'report-claim',
+	name: 'report-trash',
 	preventDoubleClick: true,
 };
 
@@ -18,39 +18,37 @@ export async function execute(interaction: CommandInteraction, botClient: BotCli
 	const guildMember = await interaction.guild.members.fetch(interaction.user.id);
 	const colors = getConfigVariable('colors');
 
-	if (!embedData) {
+	if (!embedData || !embedData?.fields) {
 		return await interaction.editReply({ content: 'No embed data found in the message.' });
 	}
 
-	const row = new ActionRowBuilder().addComponents([
-		new ButtonBuilder().setCustomId(`report-done:${actionId}`).setLabel(`Done`).setStyle(ButtonStyle.Success),
-		new ButtonBuilder().setCustomId(`report-trash:${actionId}`).setLabel(`Unjustified report`).setStyle(ButtonStyle.Danger),
-	]);
-
-	const fields = [
-		...(embedData.fields ?? []),
-		{ name: '\u200B', value: '\u200B' },
-		{ name: 'Assigned admin', value: `${interaction.user.toString()} ${guildMember.nickname || interaction.user.displayName}` },
-	];
+	let fields = [...(embedData.fields ?? [])];
+	if (embedData.fields[embedData.fields.length - 1]?.name !== 'Assigned admin') {
+		fields.push(
+			{ name: '\u200B', value: '\u200B' },
+			{ name: 'Assigned admin', value: `${interaction.user.toString()} ${guildMember.nickname || interaction.user.displayName}` }
+		);
+	}
 
 	const serverNameMatch = embedData.title?.match(/\(([^)]+)\)/);
 	const serverName = serverNameMatch ? serverNameMatch[1] : '';
 	const embed = new BaseEmbed('info')
 		.setDescription(embedData?.description || 'Error: No description found.')
 		.addFields(fields)
-		.setTitle(`Admin Report - CLAIMED (${serverName})`)
+		.setTitle(`Admin Report - UNJUSTIFIED (${serverName})`)
 		.setURL('https://github.com/iotamale/hll-discord-reports')
-		.setColor(colors?.report_claimed || 'green');
+		.setColor(colors?.report_trash || 'green');
 
 	await triggerMsg.edit({
+		content: '',
 		embeds: [embed.toJSON()],
-		components: [row.toJSON()],
+		components: [],
 	});
 
 	await interaction.editReply({
-		content: 'You have claimed this report.',
+		content: 'You have marked this report as unjustified.',
 	});
 	return logger.info(
-		`Report #\`${actionId}\` claimed by ${interaction.user.tag} (${interaction.user.id}) in server ${interaction.guild.name} (${interaction.guild.id})`
+		`Report #\`${actionId}\` marked as trash by ${interaction.user.tag} (${interaction.user.id}) in server ${interaction.guild.name} (${interaction.guild.id})`
 	);
 }

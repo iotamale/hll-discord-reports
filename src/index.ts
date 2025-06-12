@@ -82,7 +82,6 @@ client.on('interactionCreate', async (interaction) => {
 		try {
 			if (button?.data?.preventDoubleClick) {
 				const clicked = clickedButtons.get(actionId);
-				console.log(clickedButtons, clicked);
 				if (clicked) {
 					return await interaction.editReply({
 						content: 'This button has already been clicked by another user. Please try again later.',

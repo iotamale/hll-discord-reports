@@ -68,7 +68,7 @@ client.on('interactionCreate', async (interaction) => {
 			await command.execute(interaction, botClient);
 		} catch (error) {
 			logger.error(error);
-			await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+			// await interaction.editReply({ content: 'There was an error while executing this command!' });
 		}
 	} else if (interaction.isButton()) {
 		const { customId } = interaction;

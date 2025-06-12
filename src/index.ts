@@ -13,8 +13,8 @@ const client = new ExtendedClient({
 	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers],
 });
 
+// Set up the client commands collection
 const commandsPath = path.join(__dirname, 'commands');
-logger.info(`Commands path: ${commandsPath}`);
 const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith('.js'));
 logger.info(`Command files: ${commandFiles}`);
 
@@ -23,6 +23,18 @@ for (const file of commandFiles) {
 	const filePath = path.join(commandsPath, file);
 	const command = require(filePath);
 	client.commands.set(command.data.name, command);
+}
+
+// Set up the client buttons collection
+const buttonsPath = path.join(__dirname, 'components', 'buttons');
+const buttonFiles = fs.readdirSync(buttonsPath).filter((file) => file.endsWith('.js'));
+logger.info(`Button files: ${buttonFiles}`);
+
+for (const file of buttonFiles) {
+	logger.info(`Loading button: ${file}`);
+	const filePath = path.join(buttonsPath, file);
+	const button = require(filePath);
+	client.commands.set(button.data.name, button);
 }
 
 let botClient: BotClient;
@@ -40,24 +52,51 @@ client.once('ready', async () => {
 	});
 
 	botClient = new BotClient(client);
-
 	await botClient.connectToWebsockets();
 });
 
 client.on('interactionCreate', async (interaction) => {
-	if (!interaction.isCommand()) return;
+	if (interaction.isChatInputCommand() && interaction.isCommand()) {
+		const command = client.commands.get(interaction.commandName);
 
-	const command = client.commands.get(interaction.commandName);
+		if (!command) {
+			logger.error(`No command matching ${interaction.commandName} was found.`);
+			return interaction.reply({ content: 'This command does not exist.', ephemeral: true });
+		}
 
-	if (!command) return;
+		try {
+			await command.execute(interaction, botClient);
+		} catch (error) {
+			logger.error(error);
+			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+		}
+	} else if (interaction.isButton()) {
+		const { customId } = interaction;
+		const [buttonClass, actionId] = customId.split(':');
 
-	try {
-		await command.execute(interaction, botClient);
-	} catch (error) {
-		logger.error(error);
-		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+		const button = client.commands.get(buttonClass);
+		if (!button) return new Error('There is no code for this button.');
+
+		try {
+			// if (button?.data?.preventDoubleClick) {
+			// 	const clicked = clickedButtons.get(id);
+			// 	if (clicked) {
+			// 		await interaction.deferReply({
+			// 			ephemeral: true,
+			// 		});
+			// 		return await client.qEditReply(interaction, 'error', `Ten przycisk został już kliknięty przez innego użytkownika. Spróbuj ponownie później.`);
+			// 	}
+			// 	clickedButtons.set(id, true);
+			// 	setTimeout(() => {
+			// 		clickedButtons.delete(id);
+			// 	}, 3 * 1000);
+			// }
+			await button.execute(interaction, client, actionId);
+			// clickedButtons.delete(id);
+		} catch (error) {
+			console.log(error);
+		}
 	}
 });
-const embed = new BaseEmbed('info');
 
 client.login(config.discord_token);

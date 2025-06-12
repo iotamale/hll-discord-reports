@@ -6,7 +6,7 @@ import { WebSocketClient } from './utils/websocketClient';
 const WebSocket = require('ws');
 
 export class BotClient {
-	private readonly client: ExtendedClient;
+	public readonly client: ExtendedClient;
 	public readonly crconClient: CRCONClient;
 
 	constructor(client: ExtendedClient) {

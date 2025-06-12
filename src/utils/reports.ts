@@ -5,17 +5,12 @@ import Fuse from 'fuse.js';
 import { getConfigVariable } from '../utils/utils';
 import { BaseEmbed } from '../types/messageTypes';
 import { BotClient } from '../botClient';
-import { WebhookClient } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 
 const clanTags = getConfigVariable('clan_tags');
 enum Messages {
 	noDescription = 'No description provided.',
 	reportSent = 'Report sent successfully.',
-}
-enum emoji {
-	orange = '🟧',
-	check = '✅',
-	trash = '🗑️',
 }
 
 export class FuseResult {
@@ -61,21 +56,21 @@ export async function guessPlayer(messageContent: string, server: HllServerConfi
 
 export async function handleReport(authorName: string, authorId: string, messageContent: string, server: HllServerConfig, botClient: BotClient): Promise<void> {
 	const crconClient = botClient.crconClient;
+	const colors = getConfigVariable('colors');
 	const authorData = await crconClient.getPlayerInfo(server, authorName);
 	if (!authorData) throw new Error(`Player info for ${authorName} not found.`);
 	const preparedAuthorData = new PreparedPlayerInfo(authorData);
 
 	const suspectData = await guessPlayer(messageContent, server, crconClient);
-	console.log(suspectData);
 
 	const embed = new BaseEmbed('info')
 		.setTitle(`Admin Report - OPEN (${server.displayName})`)
 		//.setAuthor({ name: `Admin Report - OPEN (${server.displayName})`, url: 'https://discord.js.org' })
-		.setDescription(messageContent)
+		.setDescription('**Message:**\n> ' + messageContent)
 		.setURL('https://github.com/iotamale/hll-discord-reports')
-		.addBlankField()
+		.setColor(colors.report_open || 'green')
 		.addFields(
-			{ name: '\u200B', value: '\u200B' },
+			{ name: '\u200B', value: '\u200B', inline: false },
 			{ name: 'Reporting player', value: preparedAuthorData.nameField, inline: true },
 			{ name: 'ID', value: preparedAuthorData.idField, inline: true },
 			{ name: 'Squad', value: preparedAuthorData.squadField, inline: true },
@@ -105,8 +100,27 @@ export async function handleReport(authorName: string, authorId: string, message
 		embed.addFields({ name: '\u200B', value: '\u200B' }, { name: 'Suspected player', value: 'Unknown', inline: true });
 	}
 
-	const webhookUrl = getConfigVariable('log_channel_webhook');
-	if (!webhookUrl) throw new Error('Report webhook URL not configured.');
-	const webhookClient = new WebhookClient({ url: webhookUrl });
-	await webhookClient.send({ embeds: [embed] });
+	const reportChannelId = getConfigVariable('reports_channel_id');
+	const adminRolesString = server.roles.map((role) => `<@&${role}>`).join(' ');
+	const channel = await botClient.client.channels.fetch(reportChannelId);
+
+	if (!channel || !channel.isTextBased()) {
+		throw new Error(`Report channel with ID ${reportChannelId} not found or is not a text channel.`);
+	}
+	const textChannel = channel.isTextBased() ? channel : null;
+	if (!textChannel) {
+		throw new Error(`Report channel with ID ${reportChannelId} is not a text-based channel.`);
+	}
+
+	const row = new ActionRowBuilder().addComponents([
+		new ButtonBuilder().setCustomId(`report-claim:${123}`).setLabel(`Claim`).setStyle(ButtonStyle.Primary),
+		new ButtonBuilder().setCustomId(`report-finished:${123}`).setLabel(`Done`).setStyle(ButtonStyle.Success),
+		new ButtonBuilder().setCustomId(`report-trash:${123}`).setLabel(`Unjustified report`).setStyle(ButtonStyle.Danger),
+	]);
+
+	await (textChannel as any).send({
+		content: adminRolesString,
+		embeds: [embed],
+		components: [row],
+	});
 }

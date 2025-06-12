@@ -1,7 +1,7 @@
 import { getConfigVariable } from './utils';
 import axios, { Axios, AxiosResponse } from 'axios';
 import logger from '../logger';
-import { HllServerConfig, GamePlayerInfo, PlayerStats, Watchlist, PenaltyCount } from '../types/crconTypes';
+import { HllServerConfig, GamePlayerInfo, PlayerStats, Watchlist, PenaltyCount, BasicPlayerInfo } from '../types/crconTypes';
 
 export class CRCONClient {
 	public readonly hllServers: Array<HllServerConfig>;
@@ -25,6 +25,22 @@ export class CRCONClient {
 		try {
 			const response = await axios.get(`${url}/get_gamestate`, { headers: this.headers });
 			return response;
+		} catch (error) {
+			logger.error('Error fetching server info:', error);
+			throw new Error('Error fetching server info');
+		}
+	}
+
+	public async getPlayerList(url: string): Promise<BasicPlayerInfo[]> {
+		try {
+			const response = await axios.get(`${url}/get_playerids`, { headers: this.headers });
+			let res: BasicPlayerInfo[] = [];
+			console.log(response);
+			for (const player of response?.data?.result) {
+				const playerData = new BasicPlayerInfo(player[0], player[1]);
+				res.push(playerData);
+			}
+			return res;
 		} catch (error) {
 			logger.error('Error fetching server info:', error);
 			throw new Error('Error fetching server info');

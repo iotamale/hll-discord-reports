@@ -22,6 +22,7 @@
 			"roles": ["admin_role_to_ping"]
 		}
 	],
+	"clan_tags": ["PZJR", "NZN"],
 	"dev_users": ["dev_iser_id"],
 	"dev_mode": true,
 	"colors": {

@@ -1,3 +1,6 @@
+import { getConfigVariable } from '../utils/utils';
+const clanTags = getConfigVariable('clan_tags');
+
 export class HllServerConfig {
 	name: string;
 	displayName: string;
@@ -20,6 +23,28 @@ export class Watchlist {
 	constructor(reason: string, by: string) {
 		this.reason = reason;
 		this.by = by;
+	}
+}
+
+export class BasicPlayerInfo {
+	playerName: string;
+	playerId: string;
+	playerNameParsed: string[];
+
+	constructor(playerName: string, playerId: string) {
+		this.playerName = playerName;
+		this.playerId = playerId;
+		const temp = playerName.split(/\s+/);
+		let output: string[] = [];
+		for (let word of temp) {
+			word = word
+				.toUpperCase()
+				.replace(/\[.*?\]/g, '')
+				.replace(/\(.*?\)/g, ''); // removes clan tags in brackets [] ()
+			if (clanTags.includes(word)) continue;
+			output.push(word);
+		}
+		this.playerNameParsed = output;
 	}
 }
 

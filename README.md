@@ -3,6 +3,9 @@
 This Discord bot is based on [CRCON](https://github.com/MarechJ/hll_rcon_tool). It efficiently scans admin ping messages for reported player names and provides important information to help your admins make quick and informed decisions. It includes details such as player names, Steam IDs, number of team kills, team kill streaks, and total game time on the server.
 **As of now, the project is still under development.**
 
+![image](https://github.com/user-attachments/assets/1feef1ee-7fca-4164-bac0-d7c91ca77770)
+
+
 ## Instalation
 
 1. Ensure **Node.js v22.12.0** or newer is installed on your system.

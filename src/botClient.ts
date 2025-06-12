@@ -6,8 +6,6 @@ import { WebSocketClient } from './utils/websocketClient';
 const WebSocket = require('ws');
 
 export class BotClient {
-	// private readonly voiceChannelIds: Array<string>;
-	// private readonly rconUrls: Array<string>;
 	private readonly client: ExtendedClient;
 	public readonly crconClient: CRCONClient;
 
@@ -20,11 +18,8 @@ export class BotClient {
 		const hllServers: Array<HllServerConfig> = this.crconClient.hllServers;
 		logger.info(`Connecting to ${hllServers.length} HLL servers...`);
 		for (const server of this.crconClient.hllServers) {
-			const ws = new WebSocketClient(server, this.crconClient);
+			const ws = new WebSocketClient(server, this);
 			ws.connect();
-			// await new Promise((resolve) => setTimeout(resolve, 1000));
 		}
 	}
-
-	// public async establishhWebsocketConnection(server: HllServerConfig): Promise<void> {}
 }

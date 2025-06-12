@@ -21,7 +21,8 @@ export class CRCONClient {
 		};
 	}
 
-	public async getGameState(url: string): Promise<AxiosResponse> {
+	public async getGameState(server: HllServerConfig): Promise<AxiosResponse> {
+		const url = server.apiBaseUrl;
 		try {
 			const response = await axios.get(`${url}/get_gamestate`, { headers: this.headers });
 			return response;
@@ -31,11 +32,11 @@ export class CRCONClient {
 		}
 	}
 
-	public async getPlayerList(url: string): Promise<BasicPlayerInfo[]> {
+	public async getPlayerList(server: HllServerConfig): Promise<BasicPlayerInfo[]> {
+		const url = server.apiBaseUrl;
 		try {
 			const response = await axios.get(`${url}/get_playerids`, { headers: this.headers });
 			let res: BasicPlayerInfo[] = [];
-			console.log(response);
 			for (const player of response?.data?.result) {
 				const playerData = new BasicPlayerInfo(player[0], player[1]);
 				res.push(playerData);
@@ -47,7 +48,8 @@ export class CRCONClient {
 		}
 	}
 
-	public async getPlayerStats(url: string, playerName: string): Promise<PlayerStats | null> {
+	public async getPlayerStats(server: HllServerConfig, playerName: string): Promise<PlayerStats | null> {
+		const url = server.apiBaseUrl;
 		try {
 			const response = await axios.get(`${url}/get_live_game_stats`, { headers: this.headers });
 			if (response.status !== 200) {
@@ -74,8 +76,8 @@ export class CRCONClient {
 		}
 	}
 
-	public async getPlayerInfo(url: string, playerName: string): Promise<GamePlayerInfo | null> {
-		// let response: AxiosResponse;
+	public async getPlayerInfo(server: HllServerConfig, playerName: string): Promise<GamePlayerInfo | null> {
+		const url = server.apiBaseUrl;
 		try {
 			const response = await axios.get(`${url}/get_detailed_player_info?player_name=${playerName}`, { headers: this.headers });
 			if (response.status !== 200) {
@@ -86,7 +88,7 @@ export class CRCONClient {
 			const watchData = data?.profile?.watchlist;
 			const watchlist = watchData ? new Watchlist(watchData.reason, watchData.by) : null;
 
-			const playerStats = await this.getPlayerStats(url, playerName);
+			const playerStats = await this.getPlayerStats(server, playerName);
 			return new GamePlayerInfo(
 				data.name,
 				data.player_id,

@@ -5,6 +5,7 @@ import { HllServerConfig } from '../types/crconTypes';
 import { getConfigVariable } from './utils';
 import { handleReport } from './reports';
 import { CRCONClient } from './crconApiClient';
+import { BotClient } from '../botClient';
 
 export class WebSocketClient {
 	private readonly server: HllServerConfig;
@@ -13,13 +14,15 @@ export class WebSocketClient {
 	private isAlive: boolean = false;
 	private heartbeatInterval: NodeJS.Timeout | null = null;
 	private crconClient: CRCONClient;
+	private botClient: BotClient;
 
-	constructor(server: HllServerConfig, crconClient: CRCONClient) {
+	constructor(server: HllServerConfig, botClient: BotClient) {
 		this.server = server;
 		this.heartbeat = this.heartbeat.bind(this);
 		this.checkConnection = this.checkConnection.bind(this);
 		this.connect = this.connect.bind(this);
-		this.crconClient = crconClient;
+		this.crconClient = botClient.crconClient;
+		this.botClient = botClient;
 	}
 
 	private heartbeat(): void {
@@ -67,7 +70,7 @@ export class WebSocketClient {
 			for (const log of message?.logs) {
 				const playerMessage = log?.log?.sub_content;
 				if (playerMessage.toLowerCase().startsWith('!admin')) {
-					handleReport(log?.log?.player_name_1, log?.log?.player_id_1, playerMessage, this.server, this.crconClient);
+					handleReport(log?.log?.player_name_1, log?.log?.player_id_1, playerMessage, this.server, this.botClient);
 				}
 			}
 		});

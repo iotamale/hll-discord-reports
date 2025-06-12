@@ -3,7 +3,6 @@ import { HllServerConfig } from './types/crconTypes';
 import { CRCONClient } from './utils/crconApiClient';
 import logger from './logger';
 import { WebSocketClient } from './utils/websocketClient';
-const WebSocket = require('ws');
 
 export class BotClient {
 	public readonly client: ExtendedClient;
